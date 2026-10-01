@@ -1,0 +1,289 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Site theme tokens. These defaults are the "Mediance Green" theme; the Super Admin's
+   saved theme overrides them at runtime (src/lib/branding.ts). Colours are "r g b"
+   triplets so Tailwind opacity modifiers (bg-brand-500/20) keep working.
+   --------------------------------------------------------------------------- */
+:root {
+  --brand-50: 238 250 246;
+  --brand-100: 214 242 232;
+  --brand-200: 174 228 210;
+  --brand-300: 121 207 181;
+  --brand-400: 63 181 146;
+  --brand-500: 15 157 120;
+  --brand-600: 12 127 97;
+  --brand-700: 10 101 78;
+  --brand-800: 10 80 64;
+  --brand-900: 8 63 51;
+  --accent-50: 243 241 255;
+  --accent-100: 233 229 255;
+  --accent-200: 212 204 255;
+  --accent-300: 184 168 254;
+  --accent-400: 155 135 253;
+  --accent-500: 124 92 246;
+  --accent-600: 106 63 232;
+  --accent-700: 90 48 204;
+  --accent-800: 74 38 168;
+  --accent-900: 58 30 132;
+  --font-body: "Plus Jakarta Sans";
+  --font-display: "Plus Jakarta Sans";
+  --radius-card: 1rem;
+  --radius-control: 0.75rem;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  html[lang="hi"] body {
+    font-family: var(--font-body), "Noto Sans Devanagari", system-ui, sans-serif;
+  }
+  html[lang="ta"] body {
+    font-family: var(--font-body), "Noto Sans Tamil", system-ui, sans-serif;
+  }
+  body {
+    @apply bg-slate-50 text-slate-900;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight;
+  }
+}
+
+@layer components {
+  .card {
+    @apply min-w-0 rounded-card border border-slate-200/80 bg-white shadow-soft;
+  }
+  .card-pad {
+    @apply card p-5;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-control px-4 py-2 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply btn bg-brand-600 text-white shadow-sm hover:bg-brand-700;
+  }
+  .btn-accent {
+    @apply btn bg-accent-600 text-white shadow-sm hover:bg-accent-700;
+  }
+  .btn-outline {
+    @apply btn border border-slate-300 bg-white text-slate-700 hover:bg-slate-50;
+  }
+  .btn-ghost {
+    @apply btn text-slate-600 hover:bg-slate-100;
+  }
+  .btn-sm {
+    @apply rounded-lg px-3 py-1.5 text-xs;
+  }
+  .input {
+    @apply w-full rounded-control border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20;
+  }
+  .label {
+    @apply mb-1 block text-xs font-medium text-slate-500;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold;
+  }
+  .table-base {
+    @apply min-w-full divide-y divide-slate-200 text-sm;
+  }
+  .table-base thead {
+    @apply bg-slate-50/80 text-left text-[11px] font-semibold uppercase tracking-wide text-slate-500;
+  }
+  .table-base th,
+  .table-base td {
+    @apply px-4 py-3;
+  }
+  .table-base tbody {
+    @apply divide-y divide-slate-100;
+  }
+  .table-base tbody tr {
+    @apply transition-colors hover:bg-slate-50/80;
+  }
+  .section-title {
+    @apply text-sm font-semibold text-slate-800;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Dark mode. New components use `dark:` variants; the rules below re-map the
+   neutral utility classes used across existing pages so every screen follows.
+   --------------------------------------------------------------------------- */
+.dark body {
+  background-color: #0b1120;
+  color: #e2e8f0;
+}
+.dark .bg-white {
+  background-color: #111a2e;
+}
+.dark .bg-slate-50,
+.dark .bg-slate-50\/80 {
+  background-color: #0e1628;
+}
+.dark .bg-slate-100 {
+  background-color: #1b2740;
+}
+.dark .bg-slate-200 {
+  background-color: #24324f;
+}
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-50\/80:hover,
+.dark .table-base tbody tr:hover {
+  background-color: #16213a;
+}
+.dark .hover\:bg-slate-100:hover {
+  background-color: #1f2c47;
+}
+.dark .border-slate-100,
+.dark .border-slate-200,
+.dark .border-slate-200\/80 {
+  border-color: #22304b;
+}
+.dark .border-slate-300 {
+  border-color: #2e3d5c;
+}
+.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1f2c47;
+}
+.dark .text-slate-900,
+.dark .text-slate-800 {
+  color: #f1f5f9;
+}
+.dark .text-slate-700 {
+  color: #dbe3ee;
+}
+.dark .text-slate-600 {
+  color: #b4c0d3;
+}
+.dark .text-slate-500 {
+  color: #94a3b8;
+}
+.dark .text-slate-400 {
+  color: #7c8aa2;
+}
+.dark .bg-brand-50 {
+  background-color: rgb(var(--brand-500) / 0.14);
+}
+.dark .bg-brand-100 {
+  background-color: rgb(var(--brand-500) / 0.22);
+}
+.dark .text-brand-700 {
+  color: rgb(var(--brand-300));
+}
+.dark .bg-accent-50 {
+  background-color: rgb(var(--accent-500) / 0.14);
+}
+.dark .text-accent-700 {
+  color: rgb(var(--accent-300));
+}
+.dark .input,
+.dark input,
+.dark select,
+.dark textarea {
+  color-scheme: dark;
+}
+.dark .shadow-soft {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -8px rgb(0 0 0 / 0.5);
+}
+/* Soft status tints keep their hue but read well on dark surfaces. */
+.dark .bg-blue-50,
+.dark .bg-blue-100 {
+  background-color: rgb(59 130 246 / 0.16);
+}
+.dark .bg-emerald-50,
+.dark .bg-green-50,
+.dark .bg-green-100 {
+  background-color: rgb(16 185 129 / 0.16);
+}
+.dark .bg-amber-50,
+.dark .bg-amber-100,
+.dark .bg-orange-100 {
+  background-color: rgb(245 158 11 / 0.16);
+}
+.dark .bg-red-50,
+.dark .bg-red-100 {
+  background-color: rgb(239 68 68 / 0.16);
+}
+.dark .bg-purple-100,
+.dark .bg-violet-50 {
+  background-color: rgb(139 92 246 / 0.18);
+}
+
+/* Frosted headers and chips (bg-white/60–90); the low-opacity /10–/20 overlays on
+   coloured banners are intentionally left alone. */
+.dark .bg-white\/60,
+.dark .bg-white\/85,
+.dark .bg-white\/90 {
+  background-color: rgb(17 26 46 / 0.88);
+}
+.dark .bg-accent-100 {
+  background-color: rgb(var(--accent-500) / 0.22);
+}
+/* Pale decorative gradients → deep tinted gradients. */
+.dark .from-white,
+.dark .from-slate-50 {
+  --tw-gradient-from: #0b1120 var(--tw-gradient-from-position) !important;
+}
+.dark .via-white {
+  --tw-gradient-stops: var(--tw-gradient-from), #0e1628 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+.dark .to-white {
+  --tw-gradient-to: #0b1120 var(--tw-gradient-to-position) !important;
+}
+.dark .from-brand-50,
+.dark .from-brand-50\/60,
+.dark .from-brand-50\/70,
+.dark .from-brand-100 {
+  --tw-gradient-from: color-mix(in srgb, rgb(var(--brand-500)) 16%, #0b1120) var(--tw-gradient-from-position) !important;
+}
+.dark .to-brand-50\/60 {
+  --tw-gradient-to: color-mix(in srgb, rgb(var(--brand-500)) 16%, #0b1120) var(--tw-gradient-to-position) !important;
+}
+.dark .from-accent-50 {
+  --tw-gradient-from: color-mix(in srgb, rgb(var(--accent-500)) 18%, #0b1120) var(--tw-gradient-from-position) !important;
+}
+.dark .to-accent-50,
+.dark .to-accent-50\/70,
+.dark .to-accent-100 {
+  --tw-gradient-to: color-mix(in srgb, rgb(var(--accent-500)) 18%, #0b1120) var(--tw-gradient-to-position) !important;
+}
+.dark .from-red-50 {
+  --tw-gradient-from: #2a1520 var(--tw-gradient-from-position) !important;
+}
+.dark .to-red-50,
+.dark .to-amber-50 {
+  --tw-gradient-to: #2a2215 var(--tw-gradient-to-position) !important;
+}
+/* Chart gridlines and axes. */
+.dark .recharts-cartesian-grid line {
+  stroke: #1f2c47;
+}
+.dark .recharts-cartesian-axis-line,
+.dark .recharts-cartesian-axis-tick-line {
+  stroke: #2e3d5c;
+}
+.dark .recharts-default-tooltip {
+  background-color: #111a2e !important;
+  border-color: #22304b !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Print: used by the consultation summary "Download PDF" (browser print).
+   --------------------------------------------------------------------------- */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+  .print-sheet {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
