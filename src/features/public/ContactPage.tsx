@@ -28,12 +28,12 @@ export default function ContactPage() {
           {cards.map(({ icon: Icon, label, value, href }) => (
             <a key={label} href={href} target={href.startsWith("http") ? "_blank" : undefined} rel="noreferrer"
               className="card-pad flex items-center gap-4 transition hover:-translate-y-0.5 hover:shadow-lift">
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
                 <Icon size={22} />
               </span>
-              <div>
+              <div className="min-w-0">
                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{label}</p>
-                <p className="font-bold text-slate-800">{value}</p>
+                <p className="font-bold text-slate-800 [overflow-wrap:anywhere]">{value}</p>
               </div>
             </a>
           ))}
