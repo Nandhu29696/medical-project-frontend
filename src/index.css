@@ -38,6 +38,11 @@
   html {
     -webkit-font-smoothing: antialiased;
   }
+  /* Grid cells default to min-width:auto, so one long unbroken line (a name, an email, a
+     truncated title) stretches the whole column past the screen on phones. */
+  .grid > * {
+    min-width: 0;
+  }
   html[lang="hi"] body {
     font-family: var(--font-body), "Noto Sans Devanagari", system-ui, sans-serif;
   }
