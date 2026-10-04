@@ -131,7 +131,20 @@ export default function ConsultationDetailPage() {
 
   if (isLoading) return <Skeleton className="h-96 rounded-2xl" />;
   if (isError || !c) {
-    return <EmptyState title="Consultation not found" action={<Link to="/consultations" className="btn-outline">Back</Link>} />;
+    return (
+      <div className="card">
+        <EmptyState
+          title="This consultation isn't available"
+          message="It may have been cancelled and removed, or it belongs to another doctor or patient."
+          action={
+            <div className="flex flex-wrap justify-center gap-2">
+              <Link to="/consultations" className="btn-primary">My consultations</Link>
+              <Link to="/notifications" className="btn-outline">Notifications</Link>
+            </div>
+          }
+        />
+      </div>
+    );
   }
 
   const canEdit = hasAnyRole(user, ADMIN_ROLES) || c.doctor.id === user?.id;

@@ -214,7 +214,7 @@ export default function CrmLayout() {
           <div className="flex items-center gap-1">
             <span className="hidden sm:block"><LanguageSwitcher /></span>
             <ThemeToggle />
-            <NotificationBell />
+            <NotificationBell key={user?.id} />
             <ProfileMenu />
           </div>
         </header>

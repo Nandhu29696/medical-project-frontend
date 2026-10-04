@@ -1,6 +1,6 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 
-const ACCESS_TOKEN_KEY = "mediance_access_token";
+export const ACCESS_TOKEN_KEY = "mediance_access_token";
 const REFRESH_TOKEN_KEY = "mediance_refresh_token";
 
 export const tokenStorage = {

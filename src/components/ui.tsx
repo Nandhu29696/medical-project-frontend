@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import clsx from "clsx";
 import { ChevronDown, ChevronLeft, ChevronRight, TrendingDown, TrendingUp, X, type LucideIcon } from "lucide-react";
 
@@ -249,7 +250,9 @@ export function Modal({
   }, [open, onClose]);
 
   if (!open) return null;
-  return (
+  // Rendered into <body>: an animated (transformed) page wrapper would otherwise trap
+  // the fixed backdrop inside the content area.
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4 backdrop-blur-sm" onClick={onClose}>
       <div
         role="dialog"
@@ -266,7 +269,8 @@ export function Modal({
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

@@ -1,9 +1,12 @@
 import type { ReactNode } from "react";
-import { Award, BadgeCheck } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRight, Award, BadgeCheck, Package } from "lucide-react";
 
+import { ProductBottleIllustration } from "@/components/illustrations";
 import { Avatar } from "@/components/ui";
 import { useI18n } from "@/lib/i18n";
 import type { PublicDoctor } from "@/types/clinical";
+import type { Product } from "@/types/product";
 
 export function SectionHeading({
   eyebrow,
@@ -77,5 +80,49 @@ export function PublicDoctorCard({ doctor }: { doctor: PublicDoctor }) {
         {doctor.clinic_name && <p className="mt-1 text-xs text-slate-400">{doctor.clinic_name}</p>}
       </div>
     </div>
+  );
+}
+
+/** Catalogue card: primary image, price with discount, pack size, details + enquire. */
+export function ProductTile({ product }: { product: Product }) {
+  const { t } = useI18n();
+  const image = product.media.find((m) => m.is_primary && m.media_type === "IMAGE") ?? product.media.find((m) => m.media_type === "IMAGE");
+  const mrp = Number(product.mrp);
+  const price = Number(product.selling_price);
+  const saving = mrp > price ? Math.round((1 - price / mrp) * 100) : 0;
+  return (
+    <article className="card group flex flex-col overflow-hidden transition hover:-translate-y-1 hover:shadow-lift">
+      <Link to={`/product/${product.slug}`} className="relative block aspect-square overflow-hidden bg-gradient-to-br from-brand-50 to-accent-50">
+        {image ? (
+          <img src={image.file} alt={image.alt_text} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+        ) : (
+          <div className="p-12">
+            <ProductBottleIllustration />
+          </div>
+        )}
+        {saving > 0 && <span className="badge absolute left-3 top-3 bg-white/95 text-brand-700 shadow-sm">{saving}% off</span>}
+      </Link>
+      <div className="flex flex-1 flex-col p-5">
+        <Link to={`/product/${product.slug}`} className="text-lg font-bold text-slate-900 hover:text-brand-700">
+          {product.name}
+        </Link>
+        <p className="mt-1 line-clamp-2 text-sm text-slate-500">{product.short_description}</p>
+        <p className="mt-3 flex items-center gap-1.5 text-xs text-slate-500">
+          <Package size={14} className="text-brand-600" /> {product.pack_size || "—"}
+        </p>
+        <div className="mt-3 flex items-end gap-2">
+          <span className="text-2xl font-extrabold text-slate-900">₹{price.toFixed(0)}</span>
+          {saving > 0 && <span className="pb-0.5 text-sm text-slate-400 line-through">₹{mrp.toFixed(0)}</span>}
+        </div>
+        <div className="mt-auto flex gap-2 pt-4">
+          <Link to={`/product/${product.slug}`} className="btn-outline btn-sm flex-1">
+            {t("common.viewDetails")}
+          </Link>
+          <Link to={`/enquiry?product=${product.slug}`} className="btn-primary btn-sm flex-1">
+            {t("nav.enquire")} <ArrowRight size={14} />
+          </Link>
+        </div>
+      </div>
+    </article>
   );
 }

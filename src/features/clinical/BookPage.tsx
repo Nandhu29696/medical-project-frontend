@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import clsx from "clsx";
@@ -47,7 +47,16 @@ export default function BookPage() {
   const [mode, setMode] = useState("VIDEO");
   const [reason, setReason] = useState("");
 
-  const doctors = useQuery({ queryKey: ["doctors"], queryFn: () => getDoctors() });
+  const doctors = useQuery({ queryKey: ["doctors"], queryFn: () => getDoctors({ page_size: "100" }) });
+  const [searchParams] = useSearchParams();
+  const preselect = searchParams.get("doctor");
+
+  // Arriving from a doctor card ("Book") pre-selects that doctor.
+  useEffect(() => {
+    if (!preselect || doctor) return;
+    const match = doctors.data?.results.find((d) => d.id === preselect && d.is_available);
+    if (match) setDoctor(match);
+  }, [preselect, doctors.data, doctor]);
   const slots = useQuery({
     queryKey: ["slots", doctor?.id, date],
     queryFn: () => getDoctorSlots(doctor!.id, date),

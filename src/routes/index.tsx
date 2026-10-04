@@ -19,7 +19,8 @@ export const router = createBrowserRouter([
     element: <PublicLayout />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "product", ...page(() => import("@/features/public/ProductPage")) },
+      { path: "product", ...page(() => import("@/features/public/ProductsCatalogPage")) },
+      { path: "product/:slug", ...page(() => import("@/features/public/ProductPage")) },
       { path: "benefits", ...page(() => import("@/features/public/BenefitsPage")) },
       { path: "how-it-works", ...page(() => import("@/features/public/HowItWorksPage")) },
       { path: "our-doctors", ...page(() => import("@/features/public/PublicDoctorsPage")) },
@@ -42,6 +43,7 @@ export const router = createBrowserRouter([
           { path: "/consultations", ...page(() => import("@/features/clinical/ConsultationsPage")) },
           { path: "/consultations/:id", ...page(() => import("@/features/clinical/ConsultationDetailPage")) },
           { path: "/profile", ...page(() => import("@/features/users/ProfilePage")) },
+          { path: "/notifications", ...page(() => import("@/features/users/NotificationsPage")) },
           {
             element: <RequireRole roles={CRM_ROLES} />,
             children: [

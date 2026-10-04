@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   AlertTriangle,
@@ -19,6 +19,7 @@ import { ProductBottleIllustration } from "@/components/illustrations";
 import { DemoNote, Modal, Skeleton, Tabs } from "@/components/ui";
 import { CONTACT } from "@/features/public/content";
 import { getPublicProducts } from "@/lib/api/products";
+import { ProductTile } from "@/features/public/shared";
 import { useI18n } from "@/lib/i18n";
 
 type Tab = "description" | "benefits" | "usage" | "precautions";
@@ -35,6 +36,7 @@ function Paragraphs({ text }: { text: string }) {
 
 export default function ProductPage() {
   const { t } = useI18n();
+  const { slug } = useParams();
   const { data, isLoading } = useQuery({ queryKey: ["public-products"], queryFn: getPublicProducts });
   const [activeImage, setActiveImage] = useState(0);
   const [zoomOpen, setZoomOpen] = useState(false);
@@ -53,13 +55,14 @@ export default function ProductPage() {
     );
   }
 
-  const product = data?.[0];
+  const product = slug ? data?.find((p) => p.slug === slug) : data?.[0];
   if (!product) {
     return <p className="px-4 py-20 text-center text-slate-500">No product is available right now.</p>;
   }
 
   const images = product.media.filter((m) => m.media_type === "IMAGE");
-  const image = images[activeImage];
+  const image = images[activeImage] ?? images[0];
+  const others = (data ?? []).filter((p) => p.id !== product.id);
   const mrp = Number(product.mrp);
   const price = Number(product.selling_price);
   const saving = mrp > price ? Math.round((1 - price / mrp) * 100) : 0;
@@ -76,7 +79,7 @@ export default function ProductPage() {
     <div className="bg-gradient-to-b from-brand-50/60 to-white">
       <div className="mx-auto max-w-6xl px-4 py-10 md:py-14">
         <nav className="mb-6 text-xs text-slate-400" aria-label="Breadcrumb">
-          <Link to="/" className="hover:text-brand-700">{t("nav.home")}</Link> / <span className="text-slate-600">{product.name}</span>
+          <Link to="/" className="hover:text-brand-700">{t("nav.home")}</Link> / <Link to="/product" className="hover:text-brand-700">{t("nav.product")}</Link> / <span className="text-slate-600">{product.name}</span>
         </nav>
         <div className="grid gap-10 lg:grid-cols-[1.1fr_1fr]">
           {/* Gallery */}
@@ -139,7 +142,7 @@ export default function ProductPage() {
                 <div className="flex items-center gap-2 text-slate-600"><CalendarCheck size={16} className="text-brand-600" /> {t("trust.doctors")}</div>
               </div>
               <div className="mt-5 grid gap-2 sm:grid-cols-2">
-                <Link to="/enquiry" className="btn-primary py-3">{t("nav.enquire")}</Link>
+                <Link to={`/enquiry?product=${product.slug}`} className="btn-primary py-3">{t("nav.enquire")}</Link>
                 <a href={CONTACT.whatsapp} target="_blank" rel="noreferrer" className="btn-outline py-3">
                   <MessageCircle size={16} /> {t("hero.whatsapp")}
                 </a>
@@ -170,6 +173,20 @@ export default function ProductPage() {
             <div className="mt-4"><DemoNote /></div>
           </div>
         </div>
+
+        {others.length > 0 && (
+          <div className="mt-14">
+            <div className="flex items-end justify-between gap-3">
+              <h2 className="text-xl font-extrabold text-slate-900">More products</h2>
+              <Link to="/product" className="text-sm font-semibold text-brand-700 hover:underline">View all</Link>
+            </div>
+            <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {others.slice(0, 3).map((p) => (
+                <ProductTile key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <Modal open={zoomOpen} onClose={() => setZoomOpen(false)} title={product.name} wide>

@@ -24,7 +24,7 @@ import {
 } from "@/components/illustrations";
 import { Accordion, Avatar, DemoNote, Skeleton } from "@/components/ui";
 import { FAQS, TESTIMONIALS, CONTACT } from "@/features/public/content";
-import { PublicDoctorCard, SectionHeading } from "@/features/public/shared";
+import { ProductTile, PublicDoctorCard, SectionHeading } from "@/features/public/shared";
 import { getPublicDoctors } from "@/lib/api/clinical";
 import { getPublicProducts } from "@/lib/api/products";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
@@ -184,10 +184,10 @@ export default function HomePage() {
             )}
             {product?.pack_size && <p className="mt-1 text-sm text-slate-500">Pack size: {product.pack_size}</p>}
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link to="/product" className="btn-primary">
+              <Link to={product ? `/product/${product.slug}` : "/product"} className="btn-primary">
                 {t("common.viewDetails")} <ArrowRight size={16} />
               </Link>
-              <Link to="/enquiry" className="btn-outline">
+              <Link to={product ? `/enquiry?product=${product.slug}` : "/enquiry"} className="btn-outline">
                 {t("nav.enquire")}
               </Link>
             </div>
@@ -197,6 +197,23 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Product range */}
+      {(products.data?.length ?? 0) > 1 && (
+        <section className="mx-auto max-w-6xl px-4 pt-16 md:pt-20">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <SectionHeading center={false} eyebrow={t("nav.product")} title="Explore the range" />
+            <Link to="/product" className="btn-outline">
+              All {products.data?.length} products <ArrowRight size={16} />
+            </Link>
+          </div>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {products.data?.slice(1, 4).map((p) => (
+              <ProductTile key={p.id} product={p} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Focus areas */}
       <section className="mx-auto max-w-6xl px-4 py-16 md:py-20">

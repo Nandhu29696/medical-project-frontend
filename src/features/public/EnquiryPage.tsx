@@ -29,8 +29,10 @@ export default function EnquiryPage() {
   const [step, setStep] = useState(0);
   const [leadNumber, setLeadNumber] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [productSlug, setProductSlug] = useState(() => searchParams.get("product") ?? "");
 
   const { data: products } = useQuery({ queryKey: ["public-products"], queryFn: getPublicProducts });
+  const selectedProduct = products?.find((p) => p.slug === productSlug) ?? products?.[0];
 
   const {
     register,
@@ -50,7 +52,7 @@ export default function EnquiryPage() {
 
   async function onSubmit(formValues: EnquiryFormValues) {
     setServerError(null);
-    const product = products?.[0];
+    const product = selectedProduct;
     if (!product) {
       setServerError("No product available for enquiry right now.");
       return;
@@ -147,22 +149,22 @@ export default function EnquiryPage() {
             {step === 0 && (
               <div className="grid animate-fade-in gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="label">First name *</label>
-                  <input className="input" autoComplete="given-name" {...register("first_name")} />
+                  <label className="label" htmlFor="enq-first-name">First name *</label>
+                  <input id="enq-first-name" className="input" autoComplete="given-name" {...register("first_name")} />
                   <FieldError message={errors.first_name?.message} />
                 </div>
                 <div>
-                  <label className="label">Last name</label>
-                  <input className="input" autoComplete="family-name" {...register("last_name")} />
+                  <label className="label" htmlFor="enq-last-name">Last name</label>
+                  <input id="enq-last-name" className="input" autoComplete="family-name" {...register("last_name")} />
                 </div>
                 <div>
-                  <label className="label">Mobile number *</label>
-                  <input className="input" type="tel" autoComplete="tel" {...register("phone")} />
+                  <label className="label" htmlFor="enq-phone">Mobile number *</label>
+                  <input id="enq-phone" className="input" type="tel" autoComplete="tel" {...register("phone")} />
                   <FieldError message={errors.phone?.message} />
                 </div>
                 <div>
-                  <label className="label">Email (optional)</label>
-                  <input className="input" type="email" autoComplete="email" {...register("email")} />
+                  <label className="label" htmlFor="enq-email">Email (optional)</label>
+                  <input id="enq-email" className="input" type="email" autoComplete="email" {...register("email")} />
                   <FieldError message={errors.email?.message} />
                 </div>
               </div>
@@ -170,13 +172,45 @@ export default function EnquiryPage() {
 
             {step === 1 && (
               <div className="grid animate-fade-in gap-4 sm:grid-cols-2">
+                {(products?.length ?? 0) > 1 && (
+                  <fieldset className="sm:col-span-2">
+                    <legend className="label">Which product is this about?</legend>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      {products?.map((p) => {
+                        const thumb = p.media.find((m) => m.is_primary) ?? p.media[0];
+                        return (
+                          <label
+                            key={p.id}
+                            className={clsx(
+                              "flex cursor-pointer items-center gap-3 rounded-xl border p-2 text-sm transition",
+                              selectedProduct?.id === p.id ? "border-brand-500 bg-brand-50" : "border-slate-200 hover:border-brand-300"
+                            )}
+                          >
+                            <input
+                              type="radio"
+                              name="product"
+                              className="sr-only"
+                              checked={selectedProduct?.id === p.id}
+                              onChange={() => setProductSlug(p.slug)}
+                            />
+                            {thumb && <img src={thumb.file} alt="" className="h-10 w-10 shrink-0 rounded-lg object-cover" />}
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate font-semibold text-slate-800">{p.name}</span>
+                              <span className="text-xs text-slate-500">₹{Number(p.selling_price).toFixed(0)} · {p.pack_size}</span>
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </fieldset>
+                )}
                 <div>
-                  <label className="label">City</label>
-                  <input className="input" autoComplete="address-level2" {...register("city")} />
+                  <label className="label" htmlFor="enq-city">City</label>
+                  <input id="enq-city" className="input" autoComplete="address-level2" {...register("city")} />
                 </div>
                 <div>
-                  <label className="label">Quantity (packs)</label>
-                  <input className="input" type="number" min={1} {...register("quantity")} />
+                  <label className="label" htmlFor="enq-quantity">Quantity (packs)</label>
+                  <input id="enq-quantity" className="input" type="number" min={1} {...register("quantity")} />
                   <FieldError message={errors.quantity?.message} />
                 </div>
                 <div className="sm:col-span-2">
@@ -198,8 +232,8 @@ export default function EnquiryPage() {
                   </div>
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="label">How can we help? (optional)</label>
-                  <textarea className="input" rows={4} {...register("message")} />
+                  <label className="label" htmlFor="enq-message">How can we help? (optional)</label>
+                  <textarea id="enq-message" className="input" rows={4} {...register("message")} />
                 </div>
               </div>
             )}
@@ -209,6 +243,7 @@ export default function EnquiryPage() {
                 <div className="rounded-xl bg-slate-50 p-4 text-sm">
                   <p className="mb-2 font-semibold text-slate-700">Please check your details</p>
                   <dl className="grid grid-cols-2 gap-2 text-slate-600">
+                    {selectedProduct && (<><dt className="text-slate-400">Product</dt><dd>{selectedProduct.name}</dd></>)}
                     <dt className="text-slate-400">Name</dt><dd>{values.first_name} {values.last_name}</dd>
                     <dt className="text-slate-400">Mobile</dt><dd>{values.phone}</dd>
                     <dt className="text-slate-400">Email</dt><dd>{values.email || "—"}</dd>

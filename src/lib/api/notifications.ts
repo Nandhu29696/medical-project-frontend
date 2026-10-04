@@ -2,9 +2,9 @@ import { apiClient } from "@/lib/api/client";
 import type { ApiSuccess, Paginated } from "@/types/common";
 import type { AppNotification, AuditLogEntry } from "@/types/notification";
 
-export async function getNotifications(): Promise<Paginated<AppNotification>> {
+export async function getNotifications(params: Record<string, string> = {}): Promise<Paginated<AppNotification>> {
   const response = await apiClient.get<ApiSuccess<Paginated<AppNotification>>>("/notifications/", {
-    params: { page_size: 15 },
+    params: { page_size: "15", ...params },
   });
   return response.data.data;
 }

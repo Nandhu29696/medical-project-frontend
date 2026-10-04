@@ -9,7 +9,7 @@ export const LANGUAGES: { code: Language; label: string }[] = [
 
 const en = {
   "nav.home": "Home",
-  "nav.product": "Product",
+  "nav.product": "Products",
   "nav.benefits": "Benefits",
   "nav.howItWorks": "How it works",
   "nav.doctors": "Doctors",
